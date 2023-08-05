@@ -1,0 +1,19 @@
+package kr.board.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class BoardController {
+	
+	// boardList.do
+	// HandlerMapping
+	@RequestMapping("/boardList.do")
+	public String boardList() {
+		
+		List<Board> list = new ArrayList<>();
+		
+		return "boardList"; // /WEB-INF/views/boardList.jsp
+	}
+	
+}
