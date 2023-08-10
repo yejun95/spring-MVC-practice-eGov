@@ -36,6 +36,7 @@
     		</tr>
     		</c:forEach>
     	</table>
+    	<a href="boardForm.do" class="btn btn-primary btn-sm">글쓰기</a>
     </div>
     <div class="panel-footer">인프런_스프1탄_박매일</div>
   </div>
