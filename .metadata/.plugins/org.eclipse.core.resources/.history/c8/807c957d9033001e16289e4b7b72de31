@@ -1,7 +1,0 @@
-package kr.board.entity;
-
-public class Board {
-	private int idx; // 번호
-	private String title; // 제목
-	private String content; // 내용
-}

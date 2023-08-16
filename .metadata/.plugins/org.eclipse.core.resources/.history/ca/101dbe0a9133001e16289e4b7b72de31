@@ -1,6 +1,0 @@
-package kr.board.mapper;
-
-//@Mapper - mybatis API
-public interface BoardMapper {
-	public List<Board> getLists(); // 전체 리스트
-}
