@@ -30,7 +30,6 @@
 	  alert(res);
   }
   
-  
   </script>
 </head>
 <body>
