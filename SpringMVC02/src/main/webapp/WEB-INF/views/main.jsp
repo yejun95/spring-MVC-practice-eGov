@@ -37,11 +37,22 @@
 		$.each(data, function(index, obj){
 			listHtml += "<tr>";
 			listHtml += "<td>"+obj.idx+"</td>";
-			listHtml += "<td>"+obj.title+"</td>";
+			listHtml += "<td id='titleff"+obj.idx+"'><a href='javascript:goContent("+obj.idx+", "+obj.content+")' >"+obj.title+"</a></td>";
 			listHtml += "<td>"+obj.writer+"</td>";
 			listHtml += "<td>"+obj.indate+"</td>";
 			listHtml += "<td>"+obj.count+"</td>";
 			listHtml += "</tr>";
+			
+			listHtml += "<tr id='c"+obj.idx+"' style='display:none'>"
+			listHtml += "<td>내용</td>"
+			listHtml += "<td colspan='4'>"
+			listHtml += "<textarea id='contentff"+obj.idx+"' rows='7' class='form-control' readonly>"+obj.content+"</textarea>"
+			listHtml += "</br>"
+			listHtml += "<span id='updateBtn"+obj.idx+"'><button class='btn btn-success' btn-sm onclick='goUpdateForm("+obj.idx+")'>수정화면</button></span>&nbsp"
+			listHtml += "<button class='btn btn-warning' btn-sm onclick='goDelete("+obj.idx+")'>삭제</button>"
+			listHtml += "</td>"
+			listHtml += "</tr>"
+			
 		});
 			listHtml += "<tr>";
 			listHtml += "<td>";
@@ -60,16 +71,20 @@
 		$('#writer').val('');
 	};
 	
+	// 글쓰기 폼으로
 	function goForm() {
 		$("#view").css('display', 'none');
 		$("#wform").css('display', 'block');
 	};
 	
+	// boardList로
 	function goList() {
 		$("#view").css('display', 'block');
 		$("#wform").css('display', 'none');
+		$("#fclear").trigger("click");
 	};
 
+	// 글쓰기
 	function goInsert() {
 		let fData = $("#frm").serialize();
 		
@@ -81,6 +96,39 @@
 			error: function(){ alert('error');}
 		});
 	}
+	
+	// 게시글 상세보기
+	function goContent(idx, content) {
+		if($("#c"+idx).css("display") == "none") {
+			$("#c"+idx).css('display', 'table-row');
+			$("#contentff"+idx).attr("readonly", true);
+		} else {
+			$("#c"+idx).css('display', 'none');
+			$("#contentff"+idx).val(content);
+		};
+	};
+	
+	// 게시글 삭제
+	function goDelete(idx) {
+		$.ajax({
+			url: "boardDelete.do",
+			type: "get",
+			data: {"idx": idx},
+			success: loadList,
+			error: function(){ alert("err");}
+		});
+	};
+	
+	// 게시글 수정화면
+	function goUpdateForm(idx) {
+		let title = $("#titleff"+idx).text();
+		let newInput = "<input type='text' calss='form-control' value='"+title+"'/>"
+		$("#contentff"+idx).attr("readonly", false);
+		$("#titleff"+idx).html(newInput);
+		
+		let newButton = "<button class='btn btn-primary btn-sm'>수정</button>"
+		$("#updateBtn"+idx).html(newButton);
+	};
 	
 </script>
 </head>
@@ -109,7 +157,7 @@
 						<tr>
 							<td colspan="2" align="center">
 								<button type="button" class="btn btn-success btn-sm" onclick="goInsert()">등록</button>
-								<button type="reset" class="btn btn-warning btn-sm">취소</button>
+								<button type="reset" class="btn btn-warning btn-sm" id="fclear">취소</button>
 								<button type="button" class="btn btn-warning btn-sm" onclick="goList()">리스트</button>
 							</td>
 						</tr>
