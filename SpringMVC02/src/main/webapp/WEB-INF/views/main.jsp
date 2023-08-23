@@ -40,13 +40,13 @@
 			listHtml += "<td id='titleff"+obj.idx+"'><a href='javascript:goContent("+obj.idx+", "+obj.content+")' >"+obj.title+"</a></td>";
 			listHtml += "<td>"+obj.writer+"</td>";
 			listHtml += "<td>"+obj.indate+"</td>";
-			listHtml += "<td>"+obj.count+"</td>";
+			listHtml += "<td id='countff"+obj.idx+"'>"+obj.count+"</td>";
 			listHtml += "</tr>";
 			
 			listHtml += "<tr id='c"+obj.idx+"' style='display:none'>"
 			listHtml += "<td>내용</td>"
 			listHtml += "<td colspan='4'>"
-			listHtml += "<textarea id='contentff"+obj.idx+"' rows='7' class='form-control' readonly>"+obj.content+"</textarea>"
+			listHtml += "<textarea id='contentff"+obj.idx+"' rows='7' class='form-control' readonly></textarea>"
 			listHtml += "</br>"
 			listHtml += "<span id='updateBtn"+obj.idx+"'><button class='btn btn-success' btn-sm onclick='goUpdateForm("+obj.idx+")'>수정화면</button></span>&nbsp"
 			listHtml += "<button class='btn btn-warning' btn-sm onclick='goDelete("+obj.idx+")'>삭제</button>"
@@ -102,9 +102,32 @@
 		if($("#c"+idx).css("display") == "none") {
 			$("#c"+idx).css('display', 'table-row');
 			$("#contentff"+idx).attr("readonly", true);
+			
+			$.ajax({
+				url : "boardContent.do",
+				type : "get",
+				data : {"idx" : idx},
+				dataType : "json",
+				success : function(data) {
+					$("#contentff"+idx).val(data.content);
+				},
+				error : function(){ alert("err");}
+			});
 		} else {
 			$("#c"+idx).css('display', 'none');
-			$("#contentff"+idx).val(content);
+			$("#contentff"+idx).text(content);
+			
+			$.ajax({
+				url : "boardCount.do",
+				type : "get",
+				data : {"idx" : idx},
+				dataType : "json",
+				success : function(data) {
+					$("#countff"+idx).val(data.count);
+				},
+				error : function() { alert("err");}
+				
+			});
 		};
 	};
 	
@@ -122,12 +145,25 @@
 	// 게시글 수정화면
 	function goUpdateForm(idx) {
 		let title = $("#titleff"+idx).text();
-		let newInput = "<input type='text' calss='form-control' value='"+title+"'/>"
+		let newInput = "<input type='text' id='newInputff"+idx+"' calss='form-control' value='"+title+"'/>"
 		$("#contentff"+idx).attr("readonly", false);
 		$("#titleff"+idx).html(newInput);
 		
-		let newButton = "<button class='btn btn-primary btn-sm'>수정</button>"
+		let newButton = "<button class='btn btn-primary btn-sm' onclick='goUpdate("+idx+")'>수정</button>"
 		$("#updateBtn"+idx).html(newButton);
+	};
+	
+	function goUpdate(idx) {
+		let title = $("#newInputff"+idx).val();
+		let content = $("#contentff"+idx).val();
+		
+		$.ajax({
+			url : "boardUpdate.do",
+			type : "post",
+			data : {"idx" : idx, "title" : title, "content" : content},
+			success : loadList,
+			error : function() { alert("err"); }
+		});
 	};
 	
 </script>
