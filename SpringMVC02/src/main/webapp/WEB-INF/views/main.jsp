@@ -17,7 +17,7 @@
 
 	function loadList() {
 		$.ajax({
-			url : 'boardList.do',
+			url : 'board/selectAll',
 			type : 'get',
 			dataType : 'json',
 			success : makeView, // 콜백함수
@@ -39,7 +39,7 @@
 			listHtml += "<td>"+obj.idx+"</td>";
 			listHtml += "<td id='titleff"+obj.idx+"'><a href='javascript:goContent("+obj.idx+", "+obj.content+")' >"+obj.title+"</a></td>";
 			listHtml += "<td>"+obj.writer+"</td>";
-			listHtml += "<td>"+obj.indate+"</td>";
+			listHtml += "<td>"+obj.indate.split(' ')[0]+"</td>";
 			listHtml += "<td id='countff"+obj.idx+"'>"+obj.count+"</td>";
 			listHtml += "</tr>";
 			
@@ -89,7 +89,7 @@
 		let fData = $("#frm").serialize();
 		
 		$.ajax({
-			url: 'boardInsert.do',
+			url: 'board/add',
 			type: 'post',
 			data: fData,
 			success: loadList,
@@ -104,12 +104,11 @@
 			$("#contentff"+idx).attr("readonly", true);
 			
 			$.ajax({
-				url : "boardContent.do",
+				url : "board/selectOne/"+idx,
 				type : "get",
-				data : {"idx" : idx},
 				dataType : "json",
 				success : function(data) {
-					$("#contentff"+idx).val(data.content);
+					$("#contentff"+idx).text(data.content);
 				},
 				error : function(){ alert("err");}
 			});
@@ -118,12 +117,11 @@
 			$("#contentff"+idx).text(content);
 			
 			$.ajax({
-				url : "boardCount.do",
-				type : "get",
-				data : {"idx" : idx},
+				url : "board/count/"+idx,
+				type : "put",
 				dataType : "json",
 				success : function(data) {
-					$("#countff"+idx).val(data.count);
+					$("#countff"+idx).text(data.count); // val.(data.count)로 하게되면 새로고침해야 바뀜
 				},
 				error : function() { alert("err");}
 				
@@ -134,9 +132,8 @@
 	// 게시글 삭제
 	function goDelete(idx) {
 		$.ajax({
-			url: "boardDelete.do",
-			type: "get",
-			data: {"idx": idx},
+			url: "board/delete/"+idx,
+ 			type: "delete",
 			success: loadList,
 			error: function(){ alert("err");}
 		});
@@ -158,9 +155,10 @@
 		let content = $("#contentff"+idx).val();
 		
 		$.ajax({
-			url : "boardUpdate.do",
-			type : "post",
-			data : {"idx" : idx, "title" : title, "content" : content},
+			url : "board/update",
+			type : "put",
+			data : JSON.stringify({"idx" : idx, "title" : title, "content" : content}),
+			contentType: "application/json;charset=utf8",
 			success : loadList,
 			error : function() { alert("err"); }
 		});

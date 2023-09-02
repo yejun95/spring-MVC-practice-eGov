@@ -6,7 +6,10 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
+		<item key="selection" value="countff"/>
 		<list key="findhistory">
+			<item value="countff"/>
+			<item value="titleff"/>
 			<item value="/Users/EGOVEDU/eGovFrame-3.10.0/"/>
 		</list>
 		<list key="replacehistory">
